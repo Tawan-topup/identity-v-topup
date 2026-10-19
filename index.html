@@ -273,3 +273,154 @@ function previewOrder() {
 </body>
 </html>
 
+}
+
+#selected {
+  color: #e4c887;
+  line-height: 1.8;
+}
+
+#result {
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+
+footer {
+  text-align: center;
+  padding: 24px 12px;
+  color: #aaa;
+  font-size: 12px;
+}
+
+@media (min-width: 600px) {
+  .packages {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>✦ MANOR TOP-UP ✦</h1>
+  <p>IDENTITY V · ECHOES RECHARGE</p>
+  <p>ยินดีต้อนรับสู่คฤหาสน์</p>
+</header>
+
+<main class="container">
+
+  <h2>เลือกแพ็ก Echoes</h2>
+
+  <div class="notice">
+    ⚠️ เว็บไซต์อยู่ระหว่างพัฒนา
+    ราคาและโบนัสเป็นข้อมูลตัวอย่างเท่านั้น
+    ยังไม่เปิดรับชำระเงินจริง
+  </div>
+
+  <div class="packages" id="packages"></div>
+
+  <section class="form-box">
+    <h2>ข้อมูลสำหรับเติมเกม</h2>
+
+    <label for="uid">Player ID / UID</label>
+    <input
+      id="uid"
+      type="text"
+      placeholder="กรอก UID ของผู้เล่น"
+      autocomplete="off"
+    >
+
+    <label for="server">เซิร์ฟเวอร์</label>
+    <select id="server">
+      <option value="">เลือกเซิร์ฟเวอร์</option>
+      <option value="Global">Global</option>
+      <option value="Asia">Asia (หากตรงกับบัญชีเกม)</option>
+    </select>
+
+    <h3>รายการที่เลือก</h3>
+    <p id="selected">ยังไม่ได้เลือกแพ็ก</p>
+
+    <button type="button" onclick="previewOrder()">
+      ตรวจสอบรายการ
+    </button>
+
+    <p id="result" aria-live="polite"></p>
+  </section>
+
+</main>
+
+<footer>
+  MANOR TOP-UP<br>
+  เว็บไซต์ตัวอย่างสำหรับ Identity V
+</footer>
+
+<script>
+const packages = [
+  { echoes: 60, bonus: 6, price: 0 },
+  { echoes: 185, bonus: 18, price: 0 },
+  { echoes: 305, bonus: 30, price: 0 },
+  { echoes: 690, bonus: 69, price: 0 },
+  { echoes: 2025, bonus: 202, price: 0 },
+  { echoes: 3330, bonus: 333, price: 0 },
+  { echoes: 6590, bonus: 659, price: 0 }
+];
+
+let chosen = null;
+
+const list = document.getElementById("packages");
+
+packages.forEach(item => {
+  const card = document.createElement("div");
+  card.className = "package";
+
+  card.innerHTML = `
+    <div class="symbol">✧</div>
+    <h3>${item.echoes.toLocaleString()} Echoes</h3>
+    <p>โบนัสตัวอย่าง ${item.bonus} Echoes*</p>
+    <p>ราคา: ยังไม่กำหนด</p>
+    <button type="button">เลือกแพ็กนี้</button>
+  `;
+
+  card.querySelector("button").addEventListener("click", () => {
+    chosen = item;
+
+    document.getElementById("selected").textContent =
+      `${item.echoes.toLocaleString()} Echoes`;
+
+    document.getElementById("result").textContent = "";
+  });
+
+  list.appendChild(card);
+});
+
+function previewOrder() {
+  const uid = document.getElementById("uid").value.trim();
+  const server = document.getElementById("server").value;
+  const result = document.getElementById("result");
+
+  if (!chosen) {
+    result.textContent = "กรุณาเลือกแพ็ก Echoes ก่อน";
+    return;
+  }
+
+  if (!uid) {
+    result.textContent = "กรุณากรอก UID สำหรับทดสอบ";
+    return;
+  }
+
+  if (!server) {
+    result.textContent = "กรุณาเลือกเซิร์ฟเวอร์";
+    return;
+  }
+
+  result.textContent =
+    `รายการทดสอบ: ${chosen.echoes} Echoes` +
+    ` | UID: ${uid} | Server: ${server}` +
+    " — ยังไม่มีการส่งออเดอร์หรือชำระเงินจริง";
+}
+</script>
+
+</body>
+</html>
+
