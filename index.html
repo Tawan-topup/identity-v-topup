@@ -1,1 +1,275 @@
 
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MANOR TOP-UP | Identity V</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #10131c;
+  color: #f5e9ce;
+}
+
+header {
+  text-align: center;
+  padding: 32px 15px;
+  background: linear-gradient(135deg, #192338, #30251f);
+  border-bottom: 2px solid #a88a55;
+}
+
+header h1 {
+  color: #d7b875;
+  letter-spacing: 3px;
+  font-size: 27px;
+}
+
+header p {
+  color: #d0c6b4;
+}
+
+.container {
+  max-width: 950px;
+  margin: auto;
+  padding: 20px;
+}
+
+h2 {
+  color: #d7b875;
+  text-align: center;
+}
+
+.notice {
+  padding: 13px;
+  background: #282b35;
+  border: 1px solid #665438;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.packages {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+  margin-top: 20px;
+}
+
+.package {
+  background: #1c2230;
+  border: 1px solid #655438;
+  border-radius: 12px;
+  padding: 17px 10px;
+  text-align: center;
+}
+
+.symbol {
+  font-size: 34px;
+  color: #e4c887;
+}
+
+.package h3 {
+  color: #e4c887;
+  font-size: 17px;
+}
+
+.package p {
+  color: #c7c3bb;
+  font-size: 13px;
+}
+
+button {
+  cursor: pointer;
+  width: 100%;
+  padding: 12px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: #9c7b43;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+button:hover {
+  background: #bd995a;
+}
+
+.form-box {
+  margin-top: 26px;
+  padding: 18px;
+  border: 1px solid #655438;
+  background: #1c2230;
+  border-radius: 12px;
+}
+
+label {
+  display: block;
+  margin: 14px 0 7px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #655438;
+  background: #10131c;
+  color: white;
+  font-size: 16px;
+}
+
+#selected {
+  color: #e4c887;
+  line-height: 1.8;
+}
+
+#result {
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+
+footer {
+  text-align: center;
+  padding: 24px 12px;
+  color: #aaa;
+  font-size: 12px;
+}
+
+@media (min-width: 600px) {
+  .packages {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>✦ MANOR TOP-UP ✦</h1>
+  <p>IDENTITY V · ECHOES RECHARGE</p>
+  <p>ยินดีต้อนรับสู่คฤหาสน์</p>
+</header>
+
+<main class="container">
+
+  <h2>เลือกแพ็ก Echoes</h2>
+
+  <div class="notice">
+    ⚠️ เว็บไซต์อยู่ระหว่างพัฒนา
+    ราคาและโบนัสเป็นข้อมูลตัวอย่างเท่านั้น
+    ยังไม่เปิดรับชำระเงินจริง
+  </div>
+
+  <div class="packages" id="packages"></div>
+
+  <section class="form-box">
+    <h2>ข้อมูลสำหรับเติมเกม</h2>
+
+    <label for="uid">Player ID / UID</label>
+    <input
+      id="uid"
+      type="text"
+      placeholder="กรอก UID ของผู้เล่น"
+      autocomplete="off"
+    >
+
+    <label for="server">เซิร์ฟเวอร์</label>
+    <select id="server">
+      <option value="">เลือกเซิร์ฟเวอร์</option>
+      <option value="Global">Global</option>
+      <option value="Asia">Asia (หากตรงกับบัญชีเกม)</option>
+    </select>
+
+    <h3>รายการที่เลือก</h3>
+    <p id="selected">ยังไม่ได้เลือกแพ็ก</p>
+
+    <button type="button" onclick="previewOrder()">
+      ตรวจสอบรายการ
+    </button>
+
+    <p id="result" aria-live="polite"></p>
+  </section>
+
+</main>
+
+<footer>
+  MANOR TOP-UP<br>
+  เว็บไซต์ตัวอย่างสำหรับ Identity V
+</footer>
+
+<script>
+const packages = [
+  { echoes: 60, bonus: 6, price: 0 },
+  { echoes: 185, bonus: 18, price: 0 },
+  { echoes: 305, bonus: 30, price: 0 },
+  { echoes: 690, bonus: 69, price: 0 },
+  { echoes: 2025, bonus: 202, price: 0 },
+  { echoes: 3330, bonus: 333, price: 0 },
+  { echoes: 6590, bonus: 659, price: 0 }
+];
+
+let chosen = null;
+
+const list = document.getElementById("packages");
+
+packages.forEach(item => {
+  const card = document.createElement("div");
+  card.className = "package";
+
+  card.innerHTML = `
+    <div class="symbol">✧</div>
+    <h3>${item.echoes.toLocaleString()} Echoes</h3>
+    <p>โบนัสตัวอย่าง ${item.bonus} Echoes*</p>
+    <p>ราคา: ยังไม่กำหนด</p>
+    <button type="button">เลือกแพ็กนี้</button>
+  `;
+
+  card.querySelector("button").addEventListener("click", () => {
+    chosen = item;
+
+    document.getElementById("selected").textContent =
+      `${item.echoes.toLocaleString()} Echoes`;
+
+    document.getElementById("result").textContent = "";
+  });
+
+  list.appendChild(card);
+});
+
+function previewOrder() {
+  const uid = document.getElementById("uid").value.trim();
+  const server = document.getElementById("server").value;
+  const result = document.getElementById("result");
+
+  if (!chosen) {
+    result.textContent = "กรุณาเลือกแพ็ก Echoes ก่อน";
+    return;
+  }
+
+  if (!uid) {
+    result.textContent = "กรุณากรอก UID สำหรับทดสอบ";
+    return;
+  }
+
+  if (!server) {
+    result.textContent = "กรุณาเลือกเซิร์ฟเวอร์";
+    return;
+  }
+
+  result.textContent =
+    `รายการทดสอบ: ${chosen.echoes} Echoes` +
+    ` | UID: ${uid} | Server: ${server}` +
+    " — ยังไม่มีการส่งออเดอร์หรือชำระเงินจริง";
+}
+</script>
+
+</body>
+</html>
+
